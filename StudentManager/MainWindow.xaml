@@ -5,12 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentManager"
         mc:Ignorable="d"
-        Title="Student Details Manager" Height="520" Width="860"
-        WindowStartupLocation="CenterScreen"
-        Background="#F0F4F8">
+        Title="Student Details Manager" Height="520" Width="860" WindowStartupLocation="CenterScreen" Background="#F0F4F8">
 
     <Window.Resources>
-        <Style x:Key="LableStyle" TargetType="TextBlock">
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="#2D3748"/>
@@ -29,11 +27,31 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="12,8"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
-        </Style>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
 
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="16">
@@ -43,12 +61,8 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0"
-                Background="White"
-                CornerRadius="10"
-                Padding="20"
-                BorderBrush="#CBD5E0"
-                BorderThickness="1">
+        <Border Grid.Column="0"  Background="White"  CornerRadius="10" Padding="20" BorderBrush="#CBD5E0"
+             BorderThickness="1">
 
             <StackPanel>
                 <TextBlock Text="Student Entry Form"
@@ -58,65 +72,63 @@
                            Margin="0,0,0,16"/>
 
                 <TextBlock Text="S.No"
-                           Style="{StaticResource LableStyle}"/>
-                <TextBox x:Name="txtSNo"
+                           Style="{StaticResource LabelStyle}"/>
+                <TextBox Text="{Binding SNo}"
                          Style="{StaticResource InputStyle}"
                          IsReadOnly="True"
-                         Background="#EDF2F7"
-                         ToolTip="Auto-generated - cannot be edited"/>
-
+                         Background="#EDF2F7"/>
                 <TextBlock Text="Student Name"
-                            Style="{StaticResource LableStyle}"/>
-                <TextBox x:Name="txtName"
-                        Style="{StaticResource InputStyle}"
-                        MaxLength="100"
-                        ToolTip="Enter the full name of the student"/>
-
+                           Style="{StaticResource LabelStyle}"/>
+                <TextBox Text="{Binding StudentName,
+                                UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource InputStyle}"
+                         MaxLength="60"/>
                 <TextBlock Text="Class"
-                           Style="{StaticResource LableStyle}"/>
-                <TextBox x:Name="txtClass"
+                           Style="{StaticResource LabelStyle}"/>
+                <TextBox Text="{Binding ClassName,
+                                UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource InputStyle}"
-                         MaxLength="20"
-                         ToolTip="e.g. Grade 10, Class A"/>
-
+                         MaxLength="20"/>
                 <TextBlock Text="Register Number"
-                           Style="{StaticResource LableStyle}"/>
-                <TextBox x:Name="txtRegNo"
+                           Style="{StaticResource LabelStyle}"/>
+                <TextBox Text="{Binding RegisterNumber,
+                                UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource InputStyle}"
-                         MaxLength="20"
-                         ToolTip="Unique Student Register Number"/>
-
-                <Separator Margin="0,20,0,16"
-                           Background="#E2E8F0"/>
-
-
-                <Button x:Name="BtnAdd"
-                        Content="➕ Add Student"
+                         MaxLength="20"/>
+                <Separator Margin="0,20,0,16" Background="#E2E8F0"/>
+                <Button Content="➕  Add Student"
+                        Command="{Binding AddCommand}"
                         Style="{StaticResource ButtonStyle}"
-                        Background="#3182CE"
-                        Margin="0,0,0,8"
-                        Click="BtnAdd_Click"/>
-
-                <Button x:Name="BtnDelete"
-                        Content="🗑️ Delete Selected"
-                        Style="{StaticResource ButtonStyle}"
-                        Background="#E53E3E"
-                        Click="BtnDelete_Click"
+                        Background="#276749"
                         Margin="0,0,0,8"/>
-
-                <Button x:Name="BtnClear"
-                        Content="🧹 Clear Form"
+                <Button Content="💾  Update Student"
+                        Command="{Binding UpdateCommand}"
                         Style="{StaticResource ButtonStyle}"
-                        Background="#718096"
-                        Click="BtnClear_Click"/>
-
-                <TextBlock x:Name="txtStatus"
-                           FontSize="11"
-                           Foreground="#38A169"
-                           TextWrapping="Wrap"
-                           Margin="0,14,0,0"
-                           HorizontalAlignment="Center"/>
-
+                        Background="#2B6CB0"
+                        Margin="0,0,0,8"/>
+                <Button Content="🗑  Delete Selected"
+                        Command="{Binding DeleteCommand}"
+                        Style="{StaticResource ButtonStyle}"
+                        Background="#C53030"
+                        Margin="0,0,0,8"/>
+                <Button Content="✖  Clear Form"
+                        Command="{Binding ClearCommand}"
+                        Style="{StaticResource ButtonStyle}"
+                        Background="#718096"/>
+                <TextBlock Text="{Binding StatusMessage}"
+                           FontSize="11" TextWrapping="Wrap" Margin="0,14,0,0" HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="Green"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsError}"
+                                             Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StackPanel>
         </Border>
 
@@ -140,8 +152,10 @@
                            Foreground="#2B6CB0"
                            Margin="0,0,0,12"/>
 
-                <DataGrid x:Name="StudentGrid"
-                          Grid.Row="1"
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding Students}"
+                          SelectedItem="{Binding SelectedStudent,
+                                         Mode=TwoWay}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
@@ -154,36 +168,23 @@
                           AlternatingRowBackground="#F7FAFC"
                           ColumnHeaderHeight="38"
                           RowHeight="36"
-                          FontSize="13"
-                          SelectionChanged="StudentGrid_SelectionChanged">
+                          FontSize="13">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background"       Value="#EBF4FF"/>
-                            <Setter Property="Foreground"       Value="#2B6CB0"/>
-                            <Setter Property="FontWeight"       Value="Bold"/>
-                            <Setter Property="Padding"          Value="10,0"/>
-                            <Setter Property="BorderBrush"      Value="#BEE3F8"/>
-                            <Setter Property="BorderThickness"  Value="0,0,1,1"/>
+                            <Setter Property="Background"      Value="#EBF4FF"/>
+                            <Setter Property="Foreground"      Value="#2B6CB0"/>
+                            <Setter Property="FontWeight"      Value="Bold"/>
+                            <Setter Property="Padding"         Value="10,0"/>
+                            <Setter Property="BorderBrush"     Value="#BEE3F8"/>
+                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
 
                     <DataGrid.Columns>
-
-                        <DataGridTextColumn Header="S.No"
-                            Binding="{Binding SNo}"
-                            Width="60"/>
-
-                        <DataGridTextColumn Header="Student Name"
-                            Binding="{Binding StudentName}"
-                            Width="*"/>
-
-                        <DataGridTextColumn Header="Class"
-                            Binding="{Binding Class}"
-                            Width="100"/>
-
-                        <DataGridTextColumn Header="Register Number"
-                            Binding="{Binding RegisterNumber}"
-                            Width="140"/>
+                        <DataGridTextColumn Header="S.No" Binding="{Binding SNo}" Width="60"/>
+                        <DataGridTextColumn Header="Student Name" Binding="{Binding StudentName}" Width="*"/>
+                        <DataGridTextColumn Header="Class" Binding="{Binding Class}" Width="100"/>
+                        <DataGridTextColumn Header="Register Number" Binding="{Binding RegisterNumber}" Width="140"/>
                     </DataGrid.Columns>
 
                 </DataGrid>
@@ -191,5 +192,6 @@
             </Grid>
         </Border>
     </Grid>
-
+    
 </Window>
+    
